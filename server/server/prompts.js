@@ -36,10 +36,10 @@ module.exports = function() {
         });
     }
 
-    function connectToSpeechRecognition(context, promptId) {
+    function connectToSpeechRecognition(context, promptId, speechFile) {
         return new Promise(function(resolve, reject) {
             // Source: https://medium.com/@HolmesLaurence/integrating-node-and-python-6b8454bfc272
-            var options = {args: [helpers.languageToCode(context.language.toLowerCase())]};
+            var options = {args: [helpers.languageToCode(context.language.toLowerCase()), speechFile]};
             PythonShell.run('../python/speech_input.py', options, function(err, data) {
                 if (err) {
                     console.log('Error:', err);
@@ -80,6 +80,7 @@ module.exports = function() {
         } else {
             helpers.getUserLanguage(req.session.user.id).then(function(language) {
                 getIndividualPrompt(req.params.id).then(function(context) {
+                    context.promptId = req.params.id;
                     context.userId = req.session.user.id;
 
                     // Re-route to /prompts page if this specific prompt is not for the user's language
@@ -102,6 +103,24 @@ module.exports = function() {
                 });
             });
         }
+    });
+
+    router.post('/:id', function(req, res) {
+        console.log('entered post route with req:', req.body);
+
+        var context = {};
+        helpers.getUserLanguage(req.session.user.id).then(function(language) {
+            context.language = language;
+            context.userId = req.session.user.id;
+
+            //console.log('req from post is', Object.keys(req.body));
+            //console.log('req.codecs from post is', req.body.filename);
+
+            // connectToSpeechRecognition(context, req.params.id, req.body.codecs).then(function(context) {
+            //     res.render('individual-prompt', context);
+            // });
+            res.render('individual-prompt', context);
+        });
     });
 
     return router;

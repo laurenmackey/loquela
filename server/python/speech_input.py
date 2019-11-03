@@ -2,34 +2,25 @@
 # Note: SpeechRecognition contains a default API key for the Google Web Speech API, but
 # we are limited to 50 requests per day with this key
 import speech_recognition as sr
-import time
 import sys
 
 languageArg = sys.argv[1]
-
-def callback(recognizer, audio):
-    # Try to recognize speech input, otherwise send back a relevant error
-    try:
-        print(recognizer.recognize_google(audio, language=languageArg))
-    except sr.RequestError:
-        # API was unreachable/unresponsive
-        print('API unavailable')
-    except sr.UnknownValueError:
-        # Speech couldn't be transcribed
-        print('Unable to recognize speech')
+fileArg = sys.argv[2]
 
 def main():
-    recognizer = sr.Recognizer()
-    microphone = sr.Microphone()
+    r = sr.Recognizer()
+    speech_input = sr.AudioFile(fileArg)
 
-    # with microphone as source:
-    #     recognizer.adjust_for_ambient_noise(source, duration=0.5)
+    with speech_input as source:
+        r.adjust_for_ambient_noise(source)
+        audio = r.record(source)
 
-    stop_listening = recognizer.listen_in_background(microphone, callback)
-
-    # TODO: update this so that it sleeps until sigint sent
-    for _ in range(100): time.sleep(0.1)
-
-    stop_listening(wait_for_stop=False)
+    # TODO: add language=languageArg somewhere in here
+    try:
+        print(r.recognize_google(audio))
+    except sr.RequestError:
+        print('API unavailable')
+    except sr.UnknownValueError:
+        print('Unable to recognize speech')
 
 main()

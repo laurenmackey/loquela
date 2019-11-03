@@ -4,6 +4,7 @@ function main() {
     var stop = document.getElementById('microphone-stop');
     var soundClips = document.getElementById('sound-clips');
     var submitButton = document.getElementById('submit-speech');
+    var speechSubmission = document.getElementById('speech-input');
     
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia ({
@@ -28,6 +29,21 @@ function main() {
                 chunks = [];
                 var audioURL = window.URL.createObjectURL(blob);
                 audio.src = audioURL;
+
+                // Send the blob URL value back to the frontend to pass back to the server on submission
+                speechSubmission.value = audioURL;
+
+                // //Convert the blob to a wav file and call the sendBlob function to send the wav file to the server
+                // var convertedfile = new File([blob], 'test.wav');
+                // sendBlob(convertedfile);
+
+                var form = new FormData();
+                form.append('file', blob, 'test.wav');
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/prompts/:id', true);
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                xhr.send(form);
             };
     
             var chunks = [];

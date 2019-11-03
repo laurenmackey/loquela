@@ -18,7 +18,10 @@
         <section id="sound-clips">
         </section>
         <br>
-        <button class="btn btn-secondary hidden" id="submit-speech">Submit Response</button>
+        <form method="POST" action="/prompts/{{promptId}}">
+            <input type="hidden" id="speech-input" name="speechSubmission"></input>
+            <button type="submit" class="btn btn-secondary hidden" id="submit-speech">Submit Response</button>
+        </form>
     </div>
 </div>
 
