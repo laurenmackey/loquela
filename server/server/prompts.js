@@ -6,7 +6,6 @@ module.exports = function() {
     const session = require('express-session');
     let {PythonShell} = require('python-shell');
 
-
     function getPromptData(userId) {
         return new Promise(function(resolve, reject) {
             var context = {};
@@ -88,16 +87,17 @@ module.exports = function() {
                         res.redirect('../prompts');
                     } else {
                         context.speechAsTextClass = 'hidden';
-
-                        // If they're currently recording, connect to python script
-                        // to read in their speech and display what they said
-                        if (req.query.microphone) {
-                            connectToSpeechRecognition(context, req.params.id).then(function(context) {
-                                res.render('individual-prompt', context);
-                            });
-                        } else {
-                            res.render('individual-prompt', context);
-                        }
+                        
+                        // // If they're currently recording, connect to python script 
+                        // // to read in their speech and display what they said
+                        // if (req.query.microphone) {
+                        //     connectToSpeechRecognition(context, req.params.id).then(function(context) {
+                        //         res.render('individual-prompt', context);
+                        //     });
+                        // } else {
+                        //     res.render('individual-prompt', context);
+                        // }
+                        res.render('individual-prompt', context);
                     }
                 });
             });
