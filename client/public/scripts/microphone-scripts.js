@@ -19,8 +19,8 @@ function main() {
                 var audio = document.createElement('audio');
                 clipContainer.classList.add('clip');
                 audio.setAttribute('controls', '');
-                submitButton.classList.remove('hidden');
-                submitButton.classList.add('visible');
+                // submitButton.classList.remove('hidden');
+                // submitButton.classList.add('visible');
 
                 clipContainer.appendChild(audio);
                 soundClips.appendChild(clipContainer);
@@ -31,11 +31,7 @@ function main() {
                 audio.src = audioURL;
 
                 // Send the blob URL value back to the frontend to pass back to the server on submission
-                speechSubmission.value = audioURL;
-
-                // //Convert the blob to a wav file and call the sendBlob function to send the wav file to the server
-                // var convertedfile = new File([blob], 'test.wav');
-                // sendBlob(convertedfile);
+                // speechSubmission.value = audioURL;
 
                 var form = new FormData();
                 form.append('file', blob, 'test.wav');

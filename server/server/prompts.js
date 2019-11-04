@@ -88,16 +88,6 @@ module.exports = function() {
                         res.redirect('../prompts');
                     } else {
                         context.speechAsTextClass = 'hidden';
-                        
-                        // // If they're currently recording, connect to python script 
-                        // // to read in their speech and display what they said
-                        // if (req.query.microphone) {
-                        //     connectToSpeechRecognition(context, req.params.id).then(function(context) {
-                        //         res.render('individual-prompt', context);
-                        //     });
-                        // } else {
-                        //     res.render('individual-prompt', context);
-                        // }
                         res.render('individual-prompt', context);
                     }
                 });
@@ -106,17 +96,20 @@ module.exports = function() {
     });
 
     router.post('/:id', function(req, res) {
-        console.log('entered post route with req:', req.body);
+        // console.log(req.body);
+        // var fs = require('fs');
+
+        // fs.writeFile('test.wav', req.body, function (err) {
+        //     if (err) throw err;
+        //     console.log('Saved!');
+        // });
 
         var context = {};
         helpers.getUserLanguage(req.session.user.id).then(function(language) {
             context.language = language;
             context.userId = req.session.user.id;
 
-            //console.log('req from post is', Object.keys(req.body));
-            //console.log('req.codecs from post is', req.body.filename);
-
-            // connectToSpeechRecognition(context, req.params.id, req.body.codecs).then(function(context) {
+            // connectToSpeechRecognition(context, req.params.id, req.body).then(function(context) {
             //     res.render('individual-prompt', context);
             // });
             res.render('individual-prompt', context);
