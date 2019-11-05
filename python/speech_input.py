@@ -8,6 +8,7 @@ languageArg = sys.argv[1]
 fileArg = sys.argv[2]
 
 def main():
+    print('filearg is', fileArg)
     r = sr.Recognizer()
     speech_input = sr.AudioFile(fileArg)
 
@@ -23,4 +24,5 @@ def main():
     except sr.UnknownValueError:
         print('Unable to recognize speech')
 
-main()
+if __name__ == '__main__':
+    main()

@@ -1,4 +1,5 @@
-// Source: https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API/Using_the_MediaStream_Recording_API
+// Sources: https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API/Using_the_MediaStream_Recording_API,
+// https://discourse.processing.org/t/uploading-recorded-audio-to-web-server-node-js-express/4569/4
 function main() {
     var record = document.getElementById('microphone-start');
     var stop = document.getElementById('microphone-stop');
@@ -34,11 +35,11 @@ function main() {
                 // speechSubmission.value = audioURL;
 
                 var form = new FormData();
-                form.append('file', blob, 'test.wav');
+                form.append('blob', blob);
 
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', '/prompts/:id', true);
-                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('enctype', 'multipart/form-data');
                 xhr.send(form);
             };
     
@@ -67,10 +68,6 @@ function main() {
     } else {
         console.log('getUserMedia not supported on your browser');
     }
-}
-
-function test() {
-    return 'Test success!';
 }
 
 main();

@@ -5,6 +5,10 @@ module.exports = function() {
     var helpers = require('./helpers');
     const session = require('express-session');
     let {PythonShell} = require('python-shell');
+    var multer = require('multer');
+    var upload = multer();
+    var fs = require('fs');
+    var tmp = require('tmp');
 
     function getPromptData(userId) {
         return new Promise(function(resolve, reject) {
@@ -45,6 +49,7 @@ module.exports = function() {
                     console.log('Error:', err);
                 } else {
                     if (data) {
+                        console.log('data from python file is', data);
                         context.speechAsTextClass = 'visible';
                         context.speechAsText = data[0];
 
@@ -95,21 +100,19 @@ module.exports = function() {
         }
     });
 
-    router.post('/:id', function(req, res) {
-        // console.log(req.body);
-        // var fs = require('fs');
+    // Sources: https://discourse.processing.org/t/uploading-recorded-audio-to-web-server-node-js-express/4569/4,
+    // https://www.npmjs.com/package/tmp
+    router.post('/:id', upload.single('blob'), function(req, res) {
+        var tmpObj = tmp.fileSync({ postfix: '.wav' });
 
-        // fs.writeFile('test.wav', req.body, function (err) {
-        //     if (err) throw err;
-        //     console.log('Saved!');
-        // });
+        fs.writeFileSync(tmpObj.name, Buffer.from(new Uint8Array(req.file.buffer)));
 
         var context = {};
         helpers.getUserLanguage(req.session.user.id).then(function(language) {
             context.language = language;
             context.userId = req.session.user.id;
 
-            // connectToSpeechRecognition(context, req.params.id, req.body).then(function(context) {
+            // connectToSpeechRecognition(context, req.params.id, tmpObj.name).then(function(context) {
             //     res.render('individual-prompt', context);
             // });
             res.render('individual-prompt', context);
