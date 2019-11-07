@@ -2,16 +2,21 @@
 // https://discourse.processing.org/t/uploading-recorded-audio-to-web-server-node-js-express/4569/4,
 // https://codeburst.io/html5-speech-recognition-api-670846a50e92
 function main() {
+    // DOM manipulation variables
     var record = document.getElementById('microphone-start');
     var stop = document.getElementById('microphone-stop');
-    var soundClips = document.getElementById('sound-clips');
+    var soundClip = document.getElementById('sound-clip');
     var submitButton = document.getElementById('submit-speech');
     var speechSubmission = document.getElementById('speech-input');
+    var speechDisplay = document.getElementById('speech-as-text');
+    var userLanguage = document.getElementById('user-language').value;
+    
+    // Speech-to-text variables
     var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     var recognition = new SpeechRecognition();
     recognition.interimResults = true;
     recognition.continuous = true;
-    // TODO: can add recognition.lang via passed-in variable here
+    recognition.lang = userLanguage;
     var finalSpeech = '';
     
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -20,9 +25,7 @@ function main() {
         }).then(function(stream) {
             var mediaRecorder = new MediaRecorder(stream);
     
-            mediaRecorder.onstop = function(e) {
-                console.log('Record onstop event triggered');
-    
+            mediaRecorder.onstop = function(e) {    
                 var clipContainer = document.createElement('article');
                 var audio = document.createElement('audio');
                 clipContainer.classList.add('clip');
@@ -31,7 +34,7 @@ function main() {
                 // submitButton.classList.add('visible');
 
                 clipContainer.appendChild(audio);
-                soundClips.appendChild(clipContainer);
+                soundClip.appendChild(clipContainer);
     
                 var blob = new Blob(chunks, { 'type': 'audio/wav; codecs=MS_PCM' });
                 chunks = [];
@@ -63,32 +66,35 @@ function main() {
             };
 
             recognition.onresult = function(event) {
-                console.log('event is', event);
                 var tempSpeech = '';
                 for (var i = event.resultIndex, len = event.results.length; i < len; i++) {
                     var transcript = event.results[i][0].transcript;
                     if (event.results[i].isFinal) {
                         finalSpeech += transcript;
-                        console.log('You said:', finalSpeech);
+                        speechDisplay.innerHTML = finalSpeech;
                     } else {
                         tempSpeech += transcript;
                     }
                 }
-                // finalSpeech = event.results[event.results.length - 1][0].transcript;
             };
     
             record.onclick = function() {
                 mediaRecorder.start();
-                console.log('Recorder started');
                 record.style.background = 'red';
                 record.style.color = 'black';
+
+                // reset the 'You said' text and playback section in case they're re-recording
+                finalSpeech = '';
+                speechDisplay.innerHTML = '';
+                if(soundClip.hasChildNodes()) {
+                    soundClip.removeChild(soundClip.firstChild);
+                }
 
                 recognition.start();
             };
     
             stop.onclick = function() {
                 mediaRecorder.stop();
-                console.log('Recorder stopped');
                 record.style.background = '';
                 record.style.color = '';
 
@@ -98,7 +104,7 @@ function main() {
             console.log('Error:', err);
         });
     } else {
-        console.log('Browser doesn\'t support this feature.');
+        console.log('Your browser doesn\'t support this feature.');
     }
 }
 

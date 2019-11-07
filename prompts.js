@@ -87,6 +87,7 @@ module.exports = function() {
                 getIndividualPrompt(req.params.id).then(function(context) {
                     context.promptId = req.params.id;
                     context.userId = req.session.user.id;
+                    context.languageCode = helpers.languageToCode(context.language.toLowerCase());
 
                     // Re-route to /prompts page if this specific prompt is not for the user's language
                     if (context.language != language) {
@@ -102,10 +103,12 @@ module.exports = function() {
 
     // Sources: https://discourse.processing.org/t/uploading-recorded-audio-to-web-server-node-js-express/4569/4,
     // https://www.npmjs.com/package/tmp
+    // Note: Leaving the file saving and python connection pieces in here as
+    // comments in case we want to go this route later
     router.post('/:id', upload.single('blob'), function(req, res) {
-        var tmpObj = tmp.fileSync({ postfix: '.wav' });
+        // var tmpObj = tmp.fileSync({ postfix: '.wav' });
 
-        fs.writeFileSync(tmpObj.name, Buffer.from(new Uint8Array(req.file.buffer)));
+        // fs.writeFileSync(tmpObj.name, Buffer.from(new Uint8Array(req.file.buffer)));
 
         var context = {};
         helpers.getUserLanguage(req.session.user.id).then(function(language) {

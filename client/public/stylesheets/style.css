@@ -17,3 +17,8 @@
 .visible {
     display: inline-block;
 }
+
+#speech-as-text {
+    width: 50%;
+    margin: auto;
+}
