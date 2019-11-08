@@ -73,7 +73,6 @@
     ```
 - Start up the server:
     ```
-    cd server/server
     nodemon app.js
     ```
 - If you get some errors related to nodemon, just run the command below and try starting up the server again:
@@ -84,7 +83,6 @@
 - Make changes as needed
 - Add, commit, push your changes
     ```
-    cd ../..
     git add .
     git status
     git commit -m "Your commit message"
