@@ -112,7 +112,7 @@
   - if the "@google-cloud/language": "^3.6.0" dependency is located in package.json, Run `npm install`
   - Otherwise, Run `npm install --save @google-cloud/language`
 - Add config file :
-  - In the root directory, add a file named: 'config'
+  - In the root directory, add a directory named: 'config'
   - In this directory, insert the Google API Service Account Key (keyFile.json file I will send to your email)
     - This key will grant any access to the NL API (from the account that was set-up) to those who hold it, Monthly FREE Quota = 5K units where 1 unit = API analysis call of < 1,000 unicode characters. https://cloud.google.com/natural-language/pricing
 - Set Heroku .env PATH:

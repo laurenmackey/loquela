@@ -6,41 +6,56 @@ module.exports = function() {
     const session = require('express-session');
     // Imports the Google Cloud client library
     const language = require('@google-cloud/language');
-    // let {PythonShell} = require('python-shell');
-    // var multer = require('multer');
-    // var upload = multer();
-    // var fs = require('fs');
-    // var tmp = require('tmp');
 
-//Source: https://cloud.google.com/natural-language/docs/analyzing-syntax
-async function googleSyntax(speechSubmissionText) {
-  return new Promise(async function(resolve, reject) {
-    // Creates a client
-    const client = new language.LanguageServiceClient();
-
-    const text = speechSubmissionText;
-
-    // Prepares a document, representing the provided text
-    const document = {
-      content: text,
-      type: 'PLAIN_TEXT',
-    };
-
-    // Detects syntax in the document
-    const [syntax] = await client.analyzeSyntax({document});
-
-    var syntaxAnalysis = [];
-
-    syntax.tokens.forEach(part => {
-      //Log the part of speech from analysis
-      console.log(`${part.partOfSpeech.tag}: ${part.text.content}`);
-      //console.log(`Morphology:`, part.partOfSpeech); //Additional information on part of speech
-      syntaxAnalysis.push(`${part.partOfSpeech.tag}`);
-    });
-    //return the parts of speech in sentence
-    resolve(syntaxAnalysis);
-  });
-}
+    //Sources: https://cloud.google.com/natural-language/docs/analyzing-syntax,
+    // https://cloud.google.com/natural-language/docs/reference/rest/v1/Entity#EntityMention,
+    // https://cloud.google.com/natural-language/docs/categories
+    async function googleSyntax(speechSubmissionText) {
+      return new Promise(async function(resolve, reject) {
+        // Creates a client
+        const client = new language.LanguageServiceClient();
+    
+        const text = speechSubmissionText;
+    
+        // Prepares a document, representing the provided text
+        const document = {
+          content: text,
+          type: 'PLAIN_TEXT'
+        };
+    
+        // Detects syntax in the document
+        const [syntax] = await client.analyzeSyntax({document});
+    
+        // Classifies text in the document
+        const [classification] = await client.classifyText({document});
+    
+        // Detects entities in the document
+        const [result] = await client.analyzeEntities({document});
+        const entities = result.entities;
+    
+        console.log('Categories:');
+        classification.categories.forEach(category => {
+          console.log(`Name: ${category.name}, Confidence: ${category.confidence}`);
+        });
+    
+        console.log('Entities:');
+        entities.forEach(entity => {
+          console.log(` - Name: ${entity.name}`);
+          console.log(` - Type: ${entity.type}, Salience: ${entity.salience}`);
+        });
+    
+        var syntaxAnalysis = [];
+    
+        syntax.tokens.forEach(part => {
+          //Log the part of speech from analysis
+          console.log(`${part.partOfSpeech.tag}: ${part.text.content}`);
+          //console.log(`Morphology:`, part.partOfSpeech); //Additional information on part of speech
+          syntaxAnalysis.push(`${part.partOfSpeech.tag}`);
+        });
+        //return the parts of speech in sentence
+        resolve(syntaxAnalysis);
+      });
+    }
 
     function getPromptData(userId) {
         return new Promise(function(resolve, reject) {
@@ -87,35 +102,6 @@ async function googleSyntax(speechSubmissionText) {
         });
     }
 
-    // function connectToSpeechRecognition(context, promptId, speechFile) {
-    //     return new Promise(function(resolve, reject) {
-    //         // Source: https://medium.com/@HolmesLaurence/integrating-node-and-python-6b8454bfc272
-    //         var options = {args: [helpers.languageToCode(context.language.toLowerCase()), speechFile]};
-    //         PythonShell.run('../python/speech_input.py', options, function(err, data) {
-    //             if (err) {
-    //                 console.log('Error:', err);
-    //             } else {
-    //                 if (data) {
-    //                     console.log('data from python file is', data);
-    //                     context.speechAsTextClass = 'visible';
-    //                     context.speechAsText = data[0];
-
-    //                     // Add the user's response to the database before re-rendering
-    //                     dbData = {
-    //                         userId: context.userId,
-    //                         promptId: promptId,
-    //                         text: data[0]
-    //                     };
-
-    //                     db.updatePromptActivities(dbData);
-    //                 }
-    //             }
-
-    //             resolve(context);
-    //         });
-    //     });
-    // }
-
     router.get('/', function(req, res) {
         if(helpers.notLoggedIn(req)) {
           res.render('login');
@@ -150,25 +136,9 @@ async function googleSyntax(speechSubmissionText) {
         }
     });
 
-
-
-
-    // Sources: https://discourse.processing.org/t/uploading-recorded-audio-to-web-server-node-js-express/4569/4,
-    // https://www.npmjs.com/package/tmp
-    // Note: Leaving the file saving and python connection pieces in here as comments
-    // in case we want to go this route later
-    // router.post('/:id', upload.single('blob'), function(req, res) {
     router.post('/:id', function(req, res) {
-        // var tmpObj = tmp.fileSync({ postfix: '.wav' });
-
-        // fs.writeFileSync(tmpObj.name, Buffer.from(new Uint8Array(req.file.buffer)));
-
         var context = {};
         helpers.getUserLanguage(req.session.user.id).then(function(language) {
-            // connectToSpeechRecognition(context, req.params.id, tmpObj.name).then(function(context) {
-            //     res.render('individual-prompt', context);
-            // });
-
             //Analyze user submission
             googleSyntax(req.body.speechSubmission).then(function(syntaxAnalysis) {
               //Check if Noun and Adjective are present in speechText
