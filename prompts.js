@@ -123,6 +123,7 @@ module.exports = function() {
     router.post('/:id', function(req, res) {
       // TODO: add error handling for if submission is less than 20(?) words
       // TODO: check if this works for other languages
+      // TODO: save more data in the db
       db.getUserProfileByUserId(req.session.user.id).then(function(userProfileInfo) {
         db.getPromptById(req.params.id).then(function(promptInfo) {
           // Analyze user submission
@@ -144,7 +145,7 @@ module.exports = function() {
                 userId: req.session.user.id,
                 promptId: req.params.id,
                 text: req.body.speechSubmission,
-                feedbackText: feedbackString,
+                feedback_text: feedbackString,
                 grade: feedback.avgGrade
             };
 
