@@ -134,43 +134,111 @@ function languageToCode(language) {
     return languageDict[language];
 }
 
-function promptFeedback(submission, target) {
-  //Check if Noun and Adjective are present in speechText
-  var feedback = {};
-  if(submission.includes(target)) {
-    feedback["text"] = "Great Work! " + target + " was detected in your response! ";
-    feedback["grade"] = 100;
+// To get full points, the submission must contain:
+// 2 nouns, 2 verbs, 1 of either adjective or adverb
+// Max points: 5
+// Min points: 0
+function gradeSyntax(submission, grades, feedback) {
+  let points = 0;
+  const maxPoints = 5;
+
+  const nounCount = submission.filter((syntax) => { return syntax == 'NOUN'; }).length;
+  const verbCount = submission.filter((syntax) => { return syntax == 'VERB'; }).length;
+  const adjCount = submission.filter((syntax) => { return syntax == 'ADJ'; }).length;
+  const advCount = submission.filter((syntax) => { return syntax == 'ADV'; }).length;
+  
+  if (nounCount >= 2) {
+    points += 2;
+  } else if (nounCount == 1) {
+    points += 1;
   }
-  else {
-    feedback["text"] = target + " was not detected in your response. ";
-    feedback["grade"] = 0;
+
+  if (verbCount >= 2) {
+    points += 2;
+  } else if (verbCount == 1) {
+    points += 1;
   }
-  return feedback;
+
+  if (adjCount >= 1 || advCount >= 1) {
+    points += 1;
+  }
+
+  grades.syntaxPoints = points;
+  grades.totalPoints += maxPoints;
+
+  if (points < maxPoints) {
+    feedback.syntax = `You missed ${maxPoints - points} points on syntax. Next time, make sure to use 2 verbs, 2 nouns, and either an adjective or adverb.`;
+  } else {
+    feedback.syntax = 'You got full points on syntax. Great work!';
+  }
 }
 
-function averageGrade(grades) {
-  var sum = 0;
-  var letterGrade = "";
-  for(var i = 0; i < grades.length; i++) {
-    sum += grades[i];
+// To get full points, the submission must contain:
+// The user's chosen language topic
+// Max points: 5
+// Min points: 0
+function gradeCategories(submission, topic, grades, feedback) {
+  let points = 0;
+  const maxPoints = 5;
+
+  submission.forEach(category => {
+    if (category.includes(topic)) {
+      points = 5;
+    }
+  });
+
+  grades.categoryPoints = points;
+  grades.totalPoints += maxPoints;
+
+  if (points < maxPoints) {
+    feedback.categories = `You missed ${maxPoints - points} points because you spoke about the wrong topic. Next time, try to answer the prompt's topic more directly.`;
+  } else {
+    feedback.categories = 'You got full points on topic. Great work!';
   }
-  var avg = sum / grades.length;
+}
+
+// To get full points, the submission must contain:
+// The prompt-specific entity word or words, defined in the `prompts` table
+// Max points: Variable, depending on the number of expected entity words for this prompt
+// Min points: 0
+function gradeEntities(submission, expectedEntities, grades, feedback) {
+  let points = 0;
+  const maxPoints = expectedEntities.split(' ').length;
+
+  submission.forEach(entity => {
+    if (expectedEntities.includes(entity)) {
+      points += 1;
+    }
+  });
+
+  grades.entityPoints = points;
+  grades.totalPoints += maxPoints;
+
+  if (points < maxPoints) {
+    feedback.entities = `You missed ${maxPoints - points} points because you didn't hit all the necessary points for your topic. Next time, try to give a more detailed answer.`;
+  } else {
+    feedback.entities = 'You got full points by hitting all the key points for your topic. Great work!';
+  }
+}
+
+function averageGrade(grades, feedback) {
+  avg = ((grades.syntaxPoints + grades.categoryPoints + grades.entityPoints) / grades.totalPoints) * 100;
+
+  let letterGrade = '';
   if(avg > 89) {
-    letterGrade = "A";
+    letterGrade = 'A';
+  } else if (avg > 79) {
+    letterGrade = 'B';
+  } else if (avg > 69) {
+    letterGrade = 'C';
+  } else if (avg >59) {
+    letterGrade = 'D';
+  } else {
+    letterGrade = 'F';
   }
-  else if (avg > 79) {
-    letterGrade = "B";
-  }
-  else if (avg > 69) {
-    letterGrade = "C";
-  }
-  else if (avg >59) {
-    letterGrade = "D";
-  }
-  else {
-    letterGrade = "F";
-  }
-  return letterGrade;
+  
+  feedback.letterGrade = letterGrade;
+  feedback.avgGrade = avg;
 }
 
 module.exports = {
@@ -182,6 +250,8 @@ module.exports = {
     notLoggedIn: notLoggedIn,
     languageToCode: languageToCode,
     getUserLanguage: getUserLanguage,
-    promptFeedback: promptFeedback,
+    gradeSyntax: gradeSyntax,
+    gradeCategories: gradeCategories,
+    gradeEntities: gradeEntities,
     averageGrade: averageGrade
 };

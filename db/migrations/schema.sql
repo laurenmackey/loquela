@@ -28,6 +28,7 @@ CREATE TABLE prompts (
     text VARCHAR(255),
     topic VARCHAR(255),
     language VARCHAR(255),
+    entities VARCHAR(255),
     created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

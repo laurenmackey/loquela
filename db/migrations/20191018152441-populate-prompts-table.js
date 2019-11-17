@@ -21,16 +21,16 @@ exports.setup = function(options, seedLink) {
 };
 
 var values = [
-  ['Prompt 1', 'Describe the weather today.', 'english'],
-  ['Prompt 2', 'I am prompt 2.', 'french'],
-  ['Prompt 3', 'I am prompt 3.', 'russian'],
-  ['Prompt 4', 'I am prompt 4.', 'japanese'],
-  ['Prompt 5', 'I am prompt 5.', 'french'],
-  ['Prompt 6', 'I am prompt 6.', 'russian'],
-  ['Prompt 7', 'I am prompt 7.', 'japanese'],
-  ['Prompt 8', 'I am prompt 8.', 'french']
+  ['Prompt 1', 'Describe the weather today.', 'english', 'weather'],
+  ['Prompt 2', 'I am prompt 2.', 'french', 'TBD, TBD'],
+  ['Prompt 3', 'I am prompt 3.', 'russian', 'TBD, TBD'],
+  ['Prompt 4', 'I am prompt 4.', 'japanese', 'TBD, TBD'],
+  ['Prompt 5', 'I am prompt 5.', 'french', 'TBD, TBD'],
+  ['Prompt 6', 'I am prompt 6.', 'russian', 'TBD, TBD'],
+  ['Prompt 7', 'I am prompt 7.', 'japanese', 'TBD, TBD'],
+  ['Prompt 8', 'I am prompt 8.', 'french', 'TBD, TBD']
 ]
-var query = format('INSERT INTO prompts (name, text, language) VALUES %L', values);
+var query = format('INSERT INTO prompts (name, text, language, entities) VALUES %L', values);
 
 exports.up = async function(db, callback) {
   // We need to use pg-format and create a new connection here because otherwise there's

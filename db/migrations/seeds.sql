@@ -5,14 +5,14 @@ VALUES ('lauren', 'lauren@test.com', 'lauren'),
 
 
 INSERT INTO prompts (name, text, language) 
-VALUES ('Prompt 1', 'Describe the weather today.', 'english'),
-  ('Prompt 2', 'I am prompt 2.', 'french'),
-  ('Prompt 3', 'I am prompt 3.', 'spanish'),
-  ('Prompt 4', 'I am prompt 4.', 'japanese'),
-  ('Prompt 5', 'I am prompt 5.', 'french'),
-  ('Prompt 6', 'I am prompt 6.', 'russian'),
-  ('Prompt 7', 'I am prompt 7.', 'japanese'),
-  ('Prompt 8', 'I am prompt 8.', 'french');
+VALUES ('Prompt 1', 'Describe the weather today.', 'english', 'weather'),
+  ('Prompt 2', 'I am prompt 2.', 'french', 'TBD, TBD'),
+  ('Prompt 3', 'I am prompt 3.', 'spanish', 'TBD, TBD'),
+  ('Prompt 4', 'I am prompt 4.', 'japanese', 'TBD, TBD'),
+  ('Prompt 5', 'I am prompt 5.', 'french', 'TBD, TBD'),
+  ('Prompt 6', 'I am prompt 6.', 'russian', 'TBD, TBD'),
+  ('Prompt 7', 'I am prompt 7.', 'japanese', 'TBD, TBD'),
+  ('Prompt 8', 'I am prompt 8.', 'french', 'TBD, TBD');
 
 
 INSERT INTO answers (prompt_id, correct_text) 
