@@ -58,7 +58,8 @@ exports.up = function(db, callback) {
       }
     },
     text: 'string',
-    grade: 'string',
+    grade: 'int',
+    letter_grade: 'string',
     feedback_text: 'string',
     created_at: 
     {

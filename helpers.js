@@ -174,30 +174,6 @@ function gradeSyntax(submission, grades, feedback) {
 }
 
 // To get full points, the submission must contain:
-// The user's chosen language topic
-// Max points: 5
-// Min points: 0
-function gradeCategories(submission, topic, grades, feedback) {
-  let points = 0;
-  const maxPoints = 5;
-
-  submission.forEach(category => {
-    if (category.includes(topic)) {
-      points = 5;
-    }
-  });
-
-  grades.categoryPoints = points;
-  grades.totalPoints += maxPoints;
-
-  if (points < maxPoints) {
-    feedback.categories = `You missed ${maxPoints - points} points because you spoke about the wrong topic. Next time, try to answer the prompt's topic more directly.`;
-  } else {
-    feedback.categories = 'You got full points on topic. Great work!';
-  }
-}
-
-// To get full points, the submission must contain:
 // The prompt-specific entity word or words, defined in the `prompts` table
 // Max points: Variable, depending on the number of expected entity words for this prompt
 // Min points: 0
@@ -222,7 +198,7 @@ function gradeEntities(submission, expectedEntities, grades, feedback) {
 }
 
 function averageGrade(grades, feedback) {
-  avg = ((grades.syntaxPoints + grades.categoryPoints + grades.entityPoints) / grades.totalPoints) * 100;
+  avg = ((grades.syntaxPoints + grades.entityPoints) / grades.totalPoints) * 100;
 
   let letterGrade = '';
   if(avg > 89) {
@@ -251,7 +227,6 @@ module.exports = {
     languageToCode: languageToCode,
     getUserLanguage: getUserLanguage,
     gradeSyntax: gradeSyntax,
-    gradeCategories: gradeCategories,
     gradeEntities: gradeEntities,
     averageGrade: averageGrade
 };

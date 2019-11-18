@@ -120,8 +120,8 @@ function getPromptById(promptId) {
 
 function updatePromptActivities(data) {
     return new Promise(function(resolve, reject) {
-        client.query('INSERT INTO prompt_activities(user_id, prompt_id, text, feedback_text, grade) VALUES ($1, $2, $3, $4, $5)',
-          [data.userId, data.promptId, data.text, data.feedback_text, data.grade], function(err, results) {
+        client.query('INSERT INTO prompt_activities(user_id, prompt_id, text, feedback_text, grade, letter_grade) VALUES ($1, $2, $3, $4, $5, $6)',
+          [data.userId, data.promptId, data.text, data.feedbackText, data.grade, data.letterGrade], function(err, results) {
             if (err) {
                 console.log('Error:', err);
             }

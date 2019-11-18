@@ -17,6 +17,7 @@ function main() {
     var submitButton = document.getElementById('submit-speech');
     var speechSubmission = document.getElementById('speech-input');
     var speechDisplay = document.getElementById('speech-as-text');
+    var wordLengthError = document.getElementById('word-length-error');
 
     // Speech-to-text variables
     var userLanguage = document.getElementById('user-language').value;
@@ -50,16 +51,6 @@ function main() {
                 chunks = [];
                 var audioURL = window.URL.createObjectURL(blob);
                 audio.src = audioURL;
-
-                // Note: Leaving the blob transmission piece in here as a comment
-                // in case we want to go this route later
-                // var form = new FormData();
-                // form.append('blob', blob);
-
-                // var xhr = new XMLHttpRequest();
-                // xhr.open('POST', '/prompts/:id', true);
-                // xhr.setRequestHeader('enctype', 'multipart/form-data');
-                // xhr.send(form);
             };
 
             var chunks = [];
@@ -85,11 +76,18 @@ function main() {
                         finalSpeech += transcript;
                         speechDisplay.innerHTML = finalSpeech;
 
-                        submitButton.classList.remove('hidden');
-                        submitButton.classList.add('visible');
+                        // Submission must be at least 20 tokens for content classification to work.
+                        // Don't let them submit unless they've reached this.
+                        if (finalSpeech.split(' ').length < 20) {
+                            wordLengthError.classList.remove('hidden');
+                            wordLengthError.classList.add('visible');
+                        } else {
+                            submitButton.classList.remove('hidden');
+                            submitButton.classList.add('visible');
 
-                        // Send the speech as text as a value to pass back to the server on submission
-                        speechSubmission.value = finalSpeech;
+                            // Send the speech as text as a value to pass back to the server on submission
+                            speechSubmission.value = finalSpeech;
+                        }
                     } else {
                         // We could use this to display text to the user as they're speaking
                         tempSpeech += transcript;
@@ -105,7 +103,11 @@ function main() {
                 record.style.background = 'red';
                 record.style.color = 'black';
 
-                // reset the 'You said' text and playback section in case they're re-recording
+                // Remove any previously shown errors
+                wordLengthError.classList.remove('visible');
+                wordLengthError.classList.add('hidden');
+
+                // Reset the 'You said' text and playback section in case they're re-recording
                 finalSpeech = '';
                 speechDisplay.innerHTML = '';
                 if(soundClip.hasChildNodes()) {

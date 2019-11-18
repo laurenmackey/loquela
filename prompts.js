@@ -25,7 +25,6 @@ module.exports = function() {
     
         // Make API calls to detect syntax, classify text, and detect entities
         const [syntax] = await client.analyzeSyntax({document});
-        const [classification] = await client.classifyText({document});
         const [result] = await client.analyzeEntities({document});
         const entities = result.entities;
     
@@ -37,12 +36,6 @@ module.exports = function() {
           syntaxAnalysis.push(part.partOfSpeech.tag);
         });
 
-        let categoryAnalysis = [];
-        classification.categories.forEach(category => {
-          // console.log(`Name: ${category.name}, Confidence: ${category.confidence}`);
-          categoryAnalysis.push(category.name.toLowerCase());
-        });
-
         let entityAnalysis = [];
         entities.forEach(entity => {
           // console.log(` - Name: ${entity.name}`);
@@ -51,7 +44,7 @@ module.exports = function() {
           entityAnalysis.push(entity.type.toLowerCase());
         });
 
-        const speechAnalysis = {syntax: syntaxAnalysis, categories: categoryAnalysis, entities: entityAnalysis};
+        const speechAnalysis = {syntax: syntaxAnalysis, entities: entityAnalysis};
         resolve(speechAnalysis);
       });
     }
@@ -121,37 +114,32 @@ module.exports = function() {
     });
 
     router.post('/:id', function(req, res) {
-      // TODO: add error handling for if submission is less than 20(?) words
-      // TODO: check if this works for other languages
-      // TODO: save more data in the db
-      db.getUserProfileByUserId(req.session.user.id).then(function(userProfileInfo) {
-        db.getPromptById(req.params.id).then(function(promptInfo) {
-          // Analyze user submission
-          analyzeSpeech(req.body.speechSubmission).then(function(speechAnalysis) {
-            // Grade the analyzed speech
-            let grades = {syntaxPoints: 0, categoryPoints: 0, entityPoints: 0, totalPoints: 0};
-            let feedback = {syntax: '', categories: '', entities: '', letterGrade: '', avgGrade: null};
+      db.getPromptById(req.params.id).then(function(promptInfo) {
+        // Analyze user submission
+        analyzeSpeech(req.body.speechSubmission).then(function(speechAnalysis) {
+          // Grade the analyzed speech
+          let grades = {syntaxPoints: 0, entityPoints: 0, totalPoints: 0};
+          let feedback = {syntax: '', entities: '', letterGrade: '', avgGrade: null};
 
-            helpers.gradeSyntax(speechAnalysis.syntax, grades, feedback);
-            helpers.gradeCategories(speechAnalysis.categories, userProfileInfo[0].topic, grades, feedback);
-            helpers.gradeEntities(speechAnalysis.entities, promptInfo.entities, grades, feedback);
+          helpers.gradeSyntax(speechAnalysis.syntax, grades, feedback);
+          helpers.gradeEntities(speechAnalysis.entities, promptInfo.entities, grades, feedback);
 
-            // Calculate average grade
-            helpers.averageGrade(grades, feedback);
-            const feedbackString = `You got ${Math.round(feedback.avgGrade)}%, or letter grade ${feedback.letterGrade}. ${feedback.syntax} ${feedback.categories} ${feedback.entities}`;
+          // Calculate average grade
+          helpers.averageGrade(grades, feedback);
+          const feedbackString = `${feedback.syntax} ${feedback.entities}`;
 
-            // Add the user's response to the database before redirecting
-            dbData = {
-                userId: req.session.user.id,
-                promptId: req.params.id,
-                text: req.body.speechSubmission,
-                feedback_text: feedbackString,
-                grade: feedback.avgGrade
-            };
+          // Add the user's response to the database before redirecting
+          dbData = {
+              userId: req.session.user.id,
+              promptId: req.params.id,
+              text: req.body.speechSubmission,
+              feedbackText: feedbackString,
+              grade: Math.round(feedback.avgGrade),
+              letterGrade: feedback.letterGrade
+          };
 
-            db.updatePromptActivities(dbData);
-            res.redirect('../prompts');
-          });
+          db.updatePromptActivities(dbData);
+          res.redirect('../prompts');
         });
       });
     });
