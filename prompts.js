@@ -203,6 +203,37 @@ module.exports = function() {
       });
     });
 
+    router.post('/:id', function(req, res) {
+      db.getPromptById(req.params.id).then(function(promptInfo) {
+        // Analyze user submission
+        analyzeSpeech(req.body.speechSubmission).then(function(speechAnalysis) {
+          // Grade the analyzed speech
+          let grades = {syntaxPoints: 0, entityPoints: 0, totalPoints: 0};
+          let feedback = {syntax: '', entities: '', letterGrade: '', avgGrade: null};
+
+          helpers.gradeSyntax(speechAnalysis.syntax, grades, feedback);
+          helpers.gradeEntities(speechAnalysis.entities, promptInfo.entities, grades, feedback);
+
+          // Calculate average grade
+          helpers.averageGrade(grades, feedback);
+          const feedbackString = `${feedback.syntax} ${feedback.entities}`;
+
+          // Add the user's response to the database before redirecting
+          dbData = {
+              userId: req.session.user.id,
+              promptId: req.params.id,
+              text: req.body.speechSubmission,
+              feedbackText: feedbackString,
+              grade: Math.round(feedback.avgGrade),
+              letterGrade: feedback.letterGrade
+          };
+
+          db.updatePromptActivities(dbData);
+          res.redirect('../prompts');
+        });
+      });
+    });
+
 
 
     return router;

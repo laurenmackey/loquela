@@ -27,21 +27,26 @@ app.set('port', PORT);
 
 // Use homepage.js to route as home page
 app.use('/', require('./homepage.js'));
+
 // Use login.js to route as login page
 app.use('/login', require('./login.js'));
+
 // Use signup.js to route as signup page
 app.use('/signup', require('./signup.js'));
+
 // Use survey.js to route as survey page
 app.use('/survey', require('./survey.js'));
+
 // Use profile.js to route as profile page
 app.use('/profile', require('./profile.js'));
+
 // Use users.js to route as users page
 app.use('/users', require('./users.js'));
-// Use users.js to route as users page
+
+// Use prompts.js to route as users page
 app.use('/prompts', require('./prompts.js'));
-// Use users.js to route as users page
-app.use('/lesson', require('./lesson.js'));
-// Use users.js to route as users page
+
+// Use results.js to route as users page
 app.use('/results', require('./results.js'));
 
 //Logout Route

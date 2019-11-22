@@ -30,6 +30,7 @@ exports.up = function(db, callback) {
     name: 'string',
     text: 'string',
     language: 'string',
+    topic: 'string',
     entities: 'string',
     created_at: 
     {
@@ -42,8 +43,7 @@ exports.up = function(db, callback) {
       type: 'timestamp',
       notNull: true,
       defaultValue: new String('CURRENT_TIMESTAMP')
-    },
-    ifNotExists: true
+    }
   }, callback);
 };
 

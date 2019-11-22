@@ -52,7 +52,7 @@ let availablePromptIDs = [];
 let prompts = [];
 let prompt_ids = [];
 
-var MAX_PROMPTS = 10;
+var MAX_PROMPTS =3;
 
 function updateActive() {
 
@@ -84,7 +84,7 @@ startLesson = () => {
     
     availablePrompts = [ ...prompts];
     availablePromptIDs = [ ...prompt_ids]
-    promptCounter = 10-availablePrompts.length;
+    promptCounter = 3-availablePrompts.length;
 
     
     getNewPrompt();
