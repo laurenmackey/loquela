@@ -10,7 +10,6 @@
   border-radius: 25%;
 }
 
-
 .hidden {
   display: none;
 }
@@ -23,7 +22,6 @@
     width: 50%;
     margin: auto;
 }
-
 
 .container-lesson {
   width: 100vm;
@@ -82,7 +80,6 @@
   height: 55px;
 }
 
-
 .vertical-menu a:hover {
   background-color: #ccc; /* Dark grey background on mouse-over */
 }
@@ -91,4 +88,8 @@
   background-color: royalblue; /* Add a green color to the "active/current" link */
   color: white;
   opacity: 75%;
+}
+
+#game {
+  width: 100%;
 }
