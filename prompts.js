@@ -97,42 +97,6 @@ module.exports = function() {
   
 //********************* ROUTER FUNCTIONS ***********************************/
 
-  //Get all prompts to display (not meant to be used in final product, for debugging)
-  router.get('/', function(req, res) {
-    if(helpers.notLoggedIn(req)) {
-      res.render('login');
-    } else {
-      getPromptData(req.session.user.id).then(function(context) {
-        res.render('prompts', context);
-      });
-    }
-  });
-
-
-  //Get just one prompt (not meant to be used really)
-  router.get('/number/:id', function(req, res) {
-    if(helpers.notLoggedIn(req)) {
-      res.render('login');
-    } else {       
-      helpers.getUserLanguage(req.session.user.id).then(function(language) {
-        getIndividualPrompt(req.params.id).then(function(context) {
-          context.promptId = req.params.id;
-          context.nextPromptId = +req.params.id+3;
-          context.userId = req.session.user.id;
-          context.languageCode = helpers.languageToCode(context.language.toLowerCase());
-
-          // Re-route to /prompts page if this specific prompt is not for the user's language
-          if (context.language != language) {
-            res.redirect('../prompts');
-          } else {
-            context.speechAsTextClass = 'hidden';
-            res.render('individual-prompt', context);
-          }
-        });
-      });
-    }
-  });
-
   //Load the page to begin the prompts based on which topic the user clicks
   router.get('/:topic', function(req, res) {
     if(helpers.notLoggedIn(req)) {
@@ -195,37 +159,6 @@ module.exports = function() {
 
         db.updatePromptActivities(dbData);
         res.redirect(`../${req.params.topic}`);
-      });
-    });
-  });
-
-  router.post('/:id', function(req, res) {
-    db.getPromptById(req.params.id).then(function(promptInfo) {
-      // Analyze user submission
-      analyzeSpeech(req.body.speechSubmission).then(function(speechAnalysis) {
-        // Grade the analyzed speech
-        let grades = {syntaxPoints: 0, entityPoints: 0, totalPoints: 0};
-        let feedback = {syntax: '', entities: '', letterGrade: '', avgGrade: null};
-
-        helpers.gradeSyntax(speechAnalysis.syntax, grades, feedback);
-        helpers.gradeEntities(speechAnalysis.entities, promptInfo.entities, grades, feedback);
-
-        // Calculate average grade
-        helpers.averageGrade(grades, feedback);
-        const feedbackString = `${feedback.syntax} ${feedback.entities}`;
-
-        // Add the user's response to the database before redirecting
-        dbData = {
-          userId: req.session.user.id,
-          promptId: req.params.id,
-          text: req.body.speechSubmission,
-          feedbackText: feedbackString,
-          grade: Math.round(feedback.avgGrade),
-          letterGrade: feedback.letterGrade
-        };
-
-        db.updatePromptActivities(dbData);
-        res.redirect('../prompts');
       });
     });
   });

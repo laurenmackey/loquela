@@ -167,12 +167,3 @@ viewResults = () => {
   var pathArray = (window.location.pathname.split('/'));
   return window.location.assign(`/results/${pathArray[2]}`);
 };
-
-
-
-
-
-
-
-
-

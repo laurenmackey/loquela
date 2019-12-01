@@ -16,7 +16,7 @@ client.connect();
 
 
 function getUsers() {
-            return new Promise(function(resolve, reject) {
+        return new Promise(function(resolve, reject) {
         client.query('SELECT * FROM users', function(err, results) {
             if (err) {
                 console.log('Error:', err);
@@ -170,6 +170,32 @@ function getResultsByTopic(language, topic, userId) {
     });
 }
 
+function getCompletedByTopic(language, topic, userId) {
+    return new Promise(function(resolve, reject) {
+        client.query('SELECT distinct prompt_activities.prompt_id FROM prompts JOIN prompt_activities ON prompt_activities.prompt_id = prompts.id WHERE language = $1 AND topic = $2 AND (user_id is null OR user_id = $3)', [language, topic, userId], function(err, results) {
+            if (err) {
+                console.log('Error:', err);
+            }
+
+
+            resolve(results.rows);
+        });
+    });
+}
+
+function getPromptsByTopic(language, topic) {
+    return new Promise(function(resolve, reject) {
+        client.query('SELECT * FROM prompts WHERE language = $1 AND topic = $2', [language, topic], function(err, results) {
+            if (err) {
+                console.log('Error:', err);
+            }
+
+
+            resolve(results.rows);
+        });
+    });
+}
+
 //Retrieves only prompts that user has completed and recieved feedback/grade for
 function getUserCompletedResults(language, userId) {
     return new Promise(function(resolve, reject) {
@@ -213,6 +239,8 @@ module.exports = {
     updatePromptActivities: updatePromptActivities,
     getPromptById: getPromptById,
     getResultsByTopic: getResultsByTopic,
+    getCompletedByTopic: getCompletedByTopic,
+    getPromptsByTopic: getPromptsByTopic,
     getNumOtherPrompts: getNumOtherPrompts,
     getRemainingPromptsByLanguageAndTopic: getRemainingPromptsByLanguageAndTopic,
     getUserCompletedResults: getUserCompletedResults

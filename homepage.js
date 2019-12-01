@@ -32,19 +32,13 @@ module.exports = function() {
   function checkTopicProgress(language, topic, userId) {
     return new Promise(function(resolve, reject) {
       //Query DB for total number of prompts for the given user topic
-      db.getResultsByTopic(language, topic, userId).then(function(userResults) {
-        var context = {};
-        context.topicCount = 0;
-        context.topicTotal = userResults.length;
-
-        for(var i=0; i < userResults.length; i++) {
-          //If user has recieved a grade for a given prompt (that corresponds to a given topic)
-          //add to counter
-          if(userResults[i]["grade"] != null) {
-            context.topicCount += 1;
-          }
-        }
-        resolve(context);
+      db.getCompletedByTopic(language, topic, userId).then(function(completed) {
+        db.getPromptsByTopic(language, topic).then(function(prompts) {
+          var context = {};
+          context.topicTotal = prompts.length;
+          context.topicCount = completed.length;
+          resolve(context);
+        });
       });
     });
   }
