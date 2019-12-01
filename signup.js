@@ -12,9 +12,11 @@ module.exports = function(){
     if(helpers.notLoggedIn(req)) {
       res.render('signup', context);
     } else {
-      context = {};
-      context.username = req.session.user.username;
-      res.render('logout', context);
+      db.getUserProfileByUserId(req.session.user.id).then(function(userProfileInfo) {
+        context.topic = userProfileInfo[0].topic;
+        context.username = req.session.user.username;
+        res.render('logout', context);
+      });
     }
   });
 
@@ -41,18 +43,18 @@ module.exports = function(){
         req.body.passone = (hash.digest('hex'));
         //Add user info to to database and redirect to survey page
         db.addUser(req.body).then(
-            function(content2) {
-              db.getUsers().then(function(content3) {
-                req.session.user = helpers.loginCheck(content3, req.body.username, req.body.passone);
-                res.redirect('/survey');
-              });
-            },
-            function(err) {
-              console.log(err);
-              reject(err);
-        });
+          function(content2) {
+            db.getUsers().then(function(content3) {
+              req.session.user = helpers.loginCheck(content3, req.body.username, req.body.passone);
+              res.redirect('/survey');
+            });
+          },
+          function(err) {
+            console.log(err);
+            reject(err);
+          }
+        );
       }
-      //If username already exsists, return back to signup and display error
     });
   });
 

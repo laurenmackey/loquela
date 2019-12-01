@@ -7,16 +7,16 @@
 }
 
 .round {
-    border-radius: 25%;
+  border-radius: 25%;
 }
 
 
 .hidden {
-    display: none;
+  display: none;
 }
 
 .visible {
-    display: inline-block;
+  display: inline-block;
 }
 
 #speech-as-text {
@@ -33,29 +33,22 @@
   align-items: center;
   max-width: 80rem;
   margin : 0 auto;
-
 }
-
 
 /* HUD*/
 
 #hud {
   display: flex;
   justify-content: center;
- 
-  
-
 }
 
 .hud-prefix{
   text-align: center;
   font-size: 1.5rem;
-
 }
 
 .hud-main-text {
   text-align: center;
-
 }
 
 #progressBar {
@@ -63,25 +56,21 @@
   height: 2rem;
   border: 0.1rem solid #56a5eb;
   margin-top: 1.5rem;
-  
 }
 
 #progressBarFull {
   width: 0%;
   height: 1.9rem;
   background-color: #56a5eb;
-
 }
 
 
 #prompt {
   text-align: center;
-
 }
 
 .vertical-menu {
   width: 100%; /* Set a width if you like */
-
 }
 
 .vertical-menu a {
@@ -91,7 +80,6 @@
   padding:12px; /* Add some padding */
   text-decoration: none; /* Remove underline from links */
   height: 55px;
- 
 }
 
 
@@ -104,4 +92,3 @@
   color: white;
   opacity: 75%;
 }
-

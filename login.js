@@ -6,14 +6,16 @@ module.exports = function(){
   const crypto = require('crypto');
   const session = require('express-session');
 
-
   router.get('/', function(req, res){
     if(helpers.notLoggedIn(req)) {
       res.render('login');
     } else {
       var context = {};
-      context.username = req.session.user.username;
-      res.render('logout', context);
+      db.getUserProfileByUserId(req.session.user.id).then(function(userProfileInfo) {
+        context.topic = userProfileInfo[0].topic;
+        context.username = req.session.user.username;
+        res.render('logout', context);
+      });
     }
   });
 
@@ -31,7 +33,6 @@ module.exports = function(){
         res.render('login', context);
       }
     });
-
   });
 
   return router;

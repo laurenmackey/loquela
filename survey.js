@@ -29,9 +29,13 @@ module.exports = function(){
         });
       }
       else {
+        var context = {};
         //Adds new user_profile to table
         db.addUserProfile(req.body).then(function(){
-          res.redirect('/');
+          db.getUserProfileByUserId(req.session.user.id).then(function(userProfileInfo) {
+            context.topic = userProfileInfo[0].topic;
+            res.redirect('/');
+          });
         });
       }
     });

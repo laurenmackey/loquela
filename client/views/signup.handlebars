@@ -1,29 +1,40 @@
-<div class="container text-center">
-  <h1 class="pt-5">Create A Loquela Account!</h1>
-  <form class="signup pt-5" onsubmit="return checkPassword(this)" action="/signup" method="post">
-    <h5 class="no-pad">Username:</h5>
-    <div class="row justify-content-center">
-      <input type="text" name="username" required/>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-5 mx-auto">
+            <div class="card card-signin my-5">
+                <div class="card-body">
+                    <h3 class="card-title text-center">Create a Loquela Account!</h3>
+                    <form class="signup" onsubmit="return checkPassword(this)" action="/signup" method="post">
+                        <div class="form-label-group">
+                            <label for="username">Username</label>
+                            <input type="text" name="username" id="username" class="form-control" placeholder="Username" required autofocus>
+                            <p style="color: red;">{{usernameError}}</p>
+                        </div>
+                        <div class="form-label-group pt-3">
+                            <label for="email">Email</label>
+                            <input type="email" name="email" id="email" class="form-control" placeholder="Email" required>
+                            <p style="color: red;">{{emailError}}</p>
+                        </div>
+                        <div class="form-label-group pt-3">
+                            <label for="pass">Password</label>
+                            <input type="password" name="passone" id="pass" class="form-control" placeholder="Password" required>
+                        </div>
+                        <div class="pt-3">
+                            <input type="checkbox" onclick="showPassword()">
+                            Show Password
+                        </div>
+                        <div class="form-label-group pt-3">
+                            <label for="vpass">Verify Password</label>
+                            <input type="password" name="passtwo" id="vpass" class="form-control" placeholder="Password" required>
+                        </div>
+                        <div class="pt-3">
+                            <button class="btn btn-primary btn-block" type="submit">Sign Up</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <p style="color: red;">{{usernameError}}</p>
-    <h5 class="no-pad">Email:</h5>
-    <div class="row justify-content-center">
-      <input type="email" name="email" required/>
-    </div>
-    <p style="color: red;">{{emailError}}</p>
-    <h5 class="no-pad">Password:</h5>
-    <div class="row justify-content-center">
-      <input type="password" name="passone" id="pass" required/>
-    </div>
-    <input type="checkbox" onclick="showPassword()">
-    Show Password
-    <br><br>
-    <h5 class="no-pad">Verify Password:</h5>
-    <div class="row justify-content-center">
-      <input type="password" name="passtwo" id="vpass" required/>
-    </div>
-    <br><br>
-    <input type="submit" class="btn btn-primary" name="submit" value="Sign Up">
-  </form>
 </div>
+
 <script src="/scripts/signup-scripts.js"></script>

@@ -1,4 +1,3 @@
-
 const progressText = document.getElementById("progressText");
 const progressBarFull = document.getElementById("progressBarFull");
 const prompt = document.getElementById("prompt");
@@ -18,10 +17,7 @@ const game_completed = document.getElementById("game-completed");
 window.onload=function(){
   document.getElementById("next").addEventListener("click", getNewPrompt);
   document.getElementById("next-topic").addEventListener("click", nextTopic);
-  document.getElementById("view-results").addEventListener("click", viewResults);
-  
-  
-  
+  document.getElementById("view-results").addEventListener("click", viewResults);  
 
   var path = updateActive();
 
@@ -38,16 +34,13 @@ window.onload=function(){
       response.json().then(function(data) {
         //console.log(data);
         data.prompts.forEach(element => {
-            prompts.push(element.text);
-            prompt_ids.push(element.id);
-           
+          prompts.push(element.text);
+          prompt_ids.push(element.id); 
         });
 
         data.other.forEach(element => {
           counts.push(element.count);
-          
         });
-        
        
         startLesson();
       });
@@ -56,7 +49,7 @@ window.onload=function(){
   .catch(function(err) {
     console.log('Fetch Error :-S', err);
   });
-}
+};
 
 
 let currentPrompt = {};
@@ -71,41 +64,27 @@ let prompts = [];
 let prompt_ids = [];
 let counts = [];
 
-var MAX_PROMPTS =3;
+var MAX_PROMPTS = 3;
 
 function updateActive() {
-
-  var pathArray = (window.location.pathname.split('/'));
- 
+  var pathArray = (window.location.pathname.split('/')); 
 
   var category = document.getElementById(pathArray[2]);
   category.className="active";
 
   return pathArray[2];
-
-} 
-
-
-
-
-function get_action(form) {
-
-  var pathArray = (window.location.pathname.split('/'));
-  
-  form.action = `/prompts/${pathArray[2]}/${currentPromptID}`
-  
 }
 
-
-
+function get_action(form) {
+  var pathArray = (window.location.pathname.split('/'));
+  form.action = `/prompts/${pathArray[2]}/${currentPromptID}`;
+}
 
 startLesson = () => {
-    
-    availablePrompts = [ ...prompts];
-    availablePromptIDs = [ ...prompt_ids]
-    promptCounter = 3-availablePrompts.length;
-    countPrompts = [ ...counts];
-
+  availablePrompts = [ ...prompts];
+  availablePromptIDs = [ ...prompt_ids]
+  promptCounter = 3-availablePrompts.length;
+  countPrompts = [ ...counts];
 
   //update other progress bars
   artPB.style.width = `${((3-countPrompts[0])/MAX_PROMPTS) *100}%`;
@@ -131,50 +110,35 @@ startLesson = () => {
 
   travelPB.style.width = `${((3-countPrompts[7])/MAX_PROMPTS) *100}%`;
   travelPB.innerText = `${Math.round(((3-countPrompts[7])/MAX_PROMPTS) *100)}%`;
-
-
- 
-
-
     
-    getNewPrompt();
+  getNewPrompt();
 };
 
 getNewPrompt = () => {
+  if(availablePrompts.length === 0 || promptCounter >= MAX_PROMPTS) {
+    game_completed.classList.remove('hidden');
+    game_completed.classList.add('visible');
 
-    if(availablePrompts.length === 0 || promptCounter >= MAX_PROMPTS) {
-      
-  
-        game_completed.classList.remove('hidden');
-        game_completed.classList.add('visible');
+    game.classList.remove('visible');
+    game.classList.add('hidden');
+  }
+  promptCounter++;
 
-        game.classList.remove('visible');
-        game.classList.add('hidden');
+  progressText.innerText = `Prompt ${promptCounter}/${MAX_PROMPTS}`;
+  //update progress bar
+  //console.log(promptCounter/MAX_PROMPTS);
+  //progressBarFull.style.width = `${(promptCounter/MAX_PROMPTS) * 100}%`;
 
-    }
+  //update current progress bar on fly
+  // PB.style.width = `${(promptCounter/MAX_PROMPTS) *100}%`;
 
-   
-
-
-    promptCounter++;
-
-
-    progressText.innerText = `Prompt ${promptCounter}/${MAX_PROMPTS}`;
-    //update progress bar
-    //console.log(promptCounter/MAX_PROMPTS);
-    //progressBarFull.style.width = `${(promptCounter/MAX_PROMPTS) * 100}%`;
-
-    //update current progress bar on fly
-    // PB.style.width = `${(promptCounter/MAX_PROMPTS) *100}%`;
-
-    const promptIndex = Math.floor(Math.random() * availablePrompts.length);
-        currentPrompt = availablePrompts[promptIndex];
-        prompt.innerText = currentPrompt;
-        currentPromptID = availablePromptIDs[promptIndex];
-       
+  const promptIndex = Math.floor(Math.random() * availablePrompts.length);
+    currentPrompt = availablePrompts[promptIndex];
+    prompt.innerText = currentPrompt;
+    currentPromptID = availablePromptIDs[promptIndex];
 
     availablePrompts.splice(promptIndex, 1); //get rid of used prompt
-}
+};
 
 nextTopic = () => {
   var pathArray = (window.location.pathname.split('/'));
@@ -197,19 +161,12 @@ nextTopic = () => {
     case "travel":
       return window.location.assign(`/results`);  
   }
- 
-
-  
-
-}
+};
 
 viewResults = () => {
-
   var pathArray = (window.location.pathname.split('/'));
-  return window.location.assign(`/results/${pathArray[2]}`)
-
-
-}
+  return window.location.assign(`/results/${pathArray[2]}`);
+};
 
 
 

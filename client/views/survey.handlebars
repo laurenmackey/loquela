@@ -1,44 +1,51 @@
+{{> navbar}}
 <div class="container text-center">
-  <h1 class="pt-5"><b><i>Loquela</i></b></h1>
-  <h5 class="pt-3">Welcome, {{username}}!</h5>
-  <br>
-  <form class="surveyForm" action="/survey" method="post">
-    <select class="surveySelect" name="language" required>
-      <option value="" selected disabled hidden>Select Language</option>
-      <option value="english">English</option>
-      <option value="spanish">Spanish</option>
-      <option value="french">French</option>
-      <option value="russian">Russian</option>
-      <option value="german">German</option>
-      <option value="italian">Italian</option>
-      <option value="chinese">Chinese</option>
-      <option value="japanese">Japanese</option>
-      <option value="korean">Korean</option>
-      <option value="portuguese">Portuguese</option>
-    </select>
+    <h1 class="pt-5"><b><i>Loquela</i></b></h1>
+    <h5 class="pt-3">Welcome, {{username}}!</h5>
     <br>
-    <br>
-    <select class="surveySelect" name="difficulty" required>
-      <option value="" selected disabled hidden>Select Difficulty</option>
-      <option value="Beginner">Beginner</option>
-      <option value="Intermediate">Intermediate</option>
-      <option value="Advanced">Advanced</option>
-    </select>
-    <br>
-    <br>
-    <select class="surveySelect" name="topic" required>
-      <option value="" selected disabled hidden>Select Topic</option>
-      <option value="art">Art</option>
-      <option value="weather">Weather</option>
-      <option value="movies">Movies</option>
-      <option value="electronics">Electronics</option>
-      <option value="food_and_drink">Food and Drink</option>
-      <option value="hobbies_and_leisure">Hobbies and Leisure</option>
-      <option value="sports">Sports</option>
-      <option value="travel">Travel</option>
-    </select>
-    <br>
-    <br>
-    <input type="submit" class="btn btn-primary" name="submit" value="Start Lesson!">
-  </form>
+    <form class="surveyForm" action="/survey" method="post">
+        <div class="form-group row justify-content-center">
+            <label for="language" class="col-2 col-form-label">Language</label>
+            <div class="col-4 dropdown">
+                <select class="form-control surveySelect" name="language" required>
+                    <option value="english">English</option>
+                    <option value="spanish">Spanish</option>
+                    <option value="french">French</option>
+                    <option value="russian">Russian</option>
+                    <option value="german">German</option>
+                    <option value="italian">Italian</option>
+                    <option value="chinese">Chinese</option>
+                    <option value="japanese">Japanese</option>
+                    <option value="korean">Korean</option>
+                    <option value="portuguese">Portuguese</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row justify-content-center">
+            <label for="language" class="col-2 col-form-label">Difficulty</label>
+            <div class="col-4 dropdown">
+                <select class="form-control surveySelect" name="difficulty" required>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row justify-content-center">
+            <label for="topic" class="col-2 col-form-label">Topic</label>
+            <div class="col-4 dropdown">
+                <select class="form-control" name="topic">
+                    <option value="art">Art</option>
+                    <option value="weather">Weather</option>
+                    <option value="movies">Movies</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="food_and_drink">Food and Drink</option>
+                    <option value="hobbies_and_leisure">Hobbies and Leisure</option>
+                    <option value="sports">Sports</option>
+                    <option value="travel">Travel</option>
+                </select>
+            </div>
+        </div>
+        <input type="submit" class="btn btn-primary" name="submit" value="Start Lesson!">
+    </form>
 </div>

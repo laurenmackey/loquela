@@ -1,9 +1,6 @@
 // Source: CS290 coursework
 
 var PORT = process.env.PORT || 8080;
-
-
-
 var express = require('express');
 var app = express();
 var handlebars = require('express-handlebars').create({defaultLayout: 'main'});
@@ -11,16 +8,14 @@ var body = require('body-parser');
 
 const session = require('express-session');
 
-
-
 app.use(session({secret:'SuperSecretRandomPassword', resave: true, saveUninitialized: true}));
 app.use(body.urlencoded({extended: false}));
 app.use(body.json());
 app.use(express.static(__dirname + '/client/public'));
+app.use(express.static(__dirname + '/views/partials/'));
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-
 
 app.set('views',__dirname + '/client/views');
 app.set('port', PORT);
@@ -58,10 +53,10 @@ app.get('/logout',function(req,res,next){
 
 // Handle errors
 app.use(function(req, res) {
-    res.status(404);
-    res.render('404');
-})
+  res.status(404);
+  res.render('404');
+});
 
 app.listen(app.get('port'), function() {
-    console.log('Express started on http://localhost:' + app.get('port') + '/; press Ctrl-C to terminate.');
-})
+  console.log('Express started on http://localhost:' + app.get('port') + '/; press Ctrl-C to terminate.');
+});

@@ -19,6 +19,7 @@ function checkPassword(form) {
     alert("Please enter a Username");
     return false;
   }
+
   if(email === '') {
     alert("Please enter an Email");
     return false;
@@ -27,16 +28,13 @@ function checkPassword(form) {
   if(passone === '') {
     alert("Please enter Password");
     return false;
-  }
-  else if(passtwo === '') {
+  } else if(passtwo === '') {
     alert("Please Verify Password");
     return false;
-  }
-  else if(passone != passtwo) {
+  } else if(passone != passtwo) {
     alert("Passwords did not match...");
     return false;
-  }
-  else {
+  } else {
     return true;
   }
 }

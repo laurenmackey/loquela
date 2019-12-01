@@ -16,7 +16,7 @@ client.connect();
 
 
 function getUsers() {
-    return new Promise(function(resolve, reject) {
+            return new Promise(function(resolve, reject) {
         client.query('SELECT * FROM users', function(err, results) {
             if (err) {
                 console.log('Error:', err);
@@ -67,7 +67,6 @@ function updateCurrentTopic(userId, topic) {
             if (err) {
                 console.log('Error:', err);
             }
-            console.log("updating currnet top");
             resolve(results.rows);
         });
     });
