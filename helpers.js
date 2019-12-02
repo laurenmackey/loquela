@@ -167,7 +167,7 @@ function gradeSyntax(submission, grades, feedback) {
   grades.totalPoints += maxPoints;
 
   if (points < maxPoints) {
-    feedback.syntax = `You missed ${maxPoints - points} points on syntax. Next time, make sure to use 2 verbs, 2 nouns, and either an adjective or adverb.`;
+    feedback.syntax = `You missed points on syntax. Next time, make sure to use 2 verbs, 2 nouns, and either an adjective or adverb.`;
   } else {
     feedback.syntax = 'You got full points on syntax. Great work!';
   }
@@ -191,7 +191,7 @@ function gradeEntities(submission, expectedEntities, grades, feedback) {
   grades.totalPoints += maxPoints;
 
   if (points < maxPoints) {
-    feedback.entities = `You missed ${maxPoints - points} points because you didn't hit all the necessary points for your topic. Next time, try to give a more detailed answer.`;
+    feedback.entities = `You missed points because you didn't hit all the necessary concepts for your topic. Next time, try to give a more detailed answer and include these word or words: ${expectedEntities}.`;
   } else {
     feedback.entities = 'You got full points by hitting all the key points for your topic. Great work!';
   }
